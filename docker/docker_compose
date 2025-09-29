@@ -1,0 +1,23 @@
+#!/bin/bash
+
+action=""
+WORKDIR=""
+
+while getopts "strld:h" opt; do
+    case "$opt" in
+        s) action="start" ;;
+        t) action="stop" ;;
+        r) action="restart" ;;
+        l) action="logs" ;;
+        d) WORKDIR="$OPTARG" ;;
+        h) usage ;;
+        *) usage ;;
+    esac
+done
+
+case "$action" in
+    start)   ls $WORKDIR ; sudo docker-compose  up -d ;;
+    stop)    ls $WORKDIR ;sudo docker-compose   down ;;
+    restart) ls $WORKDIR ;sudo docker-compose  down && sudo docker-compose -f "$COMPOSE_FILE" up -d =;;
+    logs)    ls $WORKDIR ;sudo docker-compose logs ;;
+esac

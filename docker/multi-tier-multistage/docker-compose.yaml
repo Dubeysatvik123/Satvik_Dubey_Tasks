@@ -11,7 +11,7 @@ services:
     volumes:
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - "5433:5432"
+      - "5434:5432"
 
   backend:
     build: ./backend
@@ -23,13 +23,13 @@ services:
       DB_PASSWORD: redhat
       PORT: 5000
     ports:
-      - "5000:5000"
+      - "5002:5000"
     depends_on:
       - db
 
   frontend:
     build: ./frontend
     ports:
-      - "3000:3000"
+      - "3001:3000"
     depends_on:
       - backend
