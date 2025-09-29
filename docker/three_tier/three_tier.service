@@ -1,0 +1,23 @@
+[Unit]
+Description=Three-tier Docker Compose Stack
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+WorkingDirectory=/home/ncs/satvik_Devops_trainee/docker/three_tier
+
+ExecStartPre=/bin/echo ">>> Three-tier is starting"
+ExecStart=/usr/bin/docker-compose up -d
+ExecStartPost=/bin/echo ">>> Three-tier is started"
+
+ExecStopPre=/bin/echo ">>> Three-tier is stopping"
+ExecStop=/usr/bin/docker-compose down
+ExecStopPost=/bin/echo ">>> Three-tier is stopped"
+
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target
+

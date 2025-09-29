@@ -14,7 +14,6 @@ RUN npm install --only=production
 
 COPY . .
 
-
 FROM ubuntu:22.04
 
 RUN apt-get update && apt-get install -y \
