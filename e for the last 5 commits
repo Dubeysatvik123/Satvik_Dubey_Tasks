@@ -1,0 +1,156 @@
+[33mcommit 8ee35820321cc3c660717716daea1bd38c1d7d10[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m
+Author: Satvik Dubey <satvikdubey268@gmail.com>
+Date:   Fri Oct 10 14:00:24 2025 +0530
+
+    Remove terraform provider binaries from repo
+
+[33mcommit 786365fdaad118d6ca10a54d455ecb70b112b1b7[m
+Author: Satvik Dubey <satvikdubey268@gmail.com>
+Date:   Fri Oct 10 13:59:26 2025 +0530
+
+    Remove terraform provider binaries from repo
+
+[33mcommit 55480cbc8741b34ef5eb56af85dace8d55aa636b[m
+Author: Satvik Dubey <satvikdubey268@gmail.com>
+Date:   Fri Oct 10 13:57:59 2025 +0530
+
+    Terraform update
+
+[33mcommit 9d3eaed6221224cb14620aad2f0df5d15f7826c5[m
+Author: Satvik Dubey <satvikdubey268@gmail.com>
+Date:   Fri Oct 10 13:53:45 2025 +0530
+
+    terraform cloud watch
+
+[33mcommit fa607b7008b712fe96ff79f2f4eafdf8547a52f8[m
+Author: Satvik Dubey <satvikdubey268@gmail.com>
+Date:   Fri Oct 10 13:49:07 2025 +0530
+
+    Terraform cloudwatch Update"
+
+[33mcommit 1b51125ecfeb7db1608f191a445ce9aab150670e[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: Satvik Dubey <satvikdubey268@gmail.com>
+Date:   Fri Oct 10 12:32:09 2025 +0530
+
+     Terraform
+
+[33mcommit 10fe502a99e89738e827d27a67e66e5987bb2434[m
+Author: Satvik Dubey <satvikdubey268@gmail.com>
+Date:   Mon Oct 6 12:28:03 2025 +0530
+
+    latest uodtae
+
+[33mcommit be347d8c75f4f442f9a880f75995e11e877446c7[m
+Author: Satvik Dubey <satvikdubey268@gmail.com>
+Date:   Wed Oct 1 12:08:21 2025 +0530
+
+    Nuxeo Elastic Search
+
+[33mcommit 0b7abe4bdd80db7b590a78f273c99421964a217c[m
+Author: Satvik Dubey <satvikdubey268@gmail.com>
+Date:   Mon Sep 29 19:07:22 2025 +0530
+
+    prometheus custom image
+
+[33mcommit 87dfb8128340edd76e69003f3181389371675964[m
+Merge: c9b980e 7285b21
+Author: Satvik Dubey <satvikdubey268@gmail.com>
+Date:   Mon Sep 29 18:14:54 2025 +0530
+
+    Merge branch 'main' of github.com:Dubeysatvik123/Satvik_Dubey_Tasks into main
+
+[33mcommit c9b980e42298f5425500a66c54d95b914c0af0be[m
+Author: Satvik Dubey <satvikdubey268@gmail.com>
+Date:   Mon Sep 29 18:13:43 2025 +0530
+
+    Custom Systemd Service Three Tier
+
+[33mcommit 7285b215bcc5b5b2689e1bdfcb0b10f0a4c14e21[m
+Author: Satvik Dubey <86493871+Dubeysatvik123@users.noreply.github.com>
+Date:   Mon Sep 29 16:34:03 2025 +0530
+
+    Delete docker/.docker_compose.sh.swp
+
+[33mcommit 640d9259764530b1410e108d7caaf44a369dd04e[m
+Author: Satvik Dubey <satvikdubey268@gmail.com>
+Date:   Mon Sep 29 16:33:06 2025 +0530
+
+    29-09-2025 Task Update
+
+[33mcommit 3876776b89a7dc56d5c626461f9a96a616df5bf8[m
+Author: Satvik Dubey <satvikdubey268@gmail.com>
+Date:   Sat Sep 27 16:34:45 2025 +0530
+
+    Multi-Tier and Multistage
+
+[33mcommit 7bda9d779d5ecd5a8bb09e98611b99fa8b4d97d6[m
+Author: Satvik Dubey <satvikdubey268@gmail.com>
+Date:   Sat Sep 27 15:13:10 2025 +0530
+
+    delete
+
+[33mcommit 20f350da3d80b58bae61a4bdb200d97f84d4732c[m
+Author: Satvik Dubey <satvikdubey268@gmail.com>
+Date:   Sat Sep 27 11:32:47 2025 +0530
+
+    first commit
+
+[33mcommit 5b4e59238d767ec0aa8b4aaa7bf28809062cde03[m
+Author: Satvik Dubey <satvikdubey268@gmail.com>
+Date:   Sat Sep 27 11:27:21 2025 +0530
+
+    Docker task
+
+[33mcommit 2e4a1cad7ec9123a6d04f0a842ad901af3c3037e[m
+Author: Satvik Dubey <satvikdubey268@gmail.com>
+Date:   Fri Sep 26 19:59:31 2025 +0530
+
+    de;leted with secure commit
+
+[33mcommit 39e1ed1c89af8ad5d340d309c6ea88dbfb612694[m
+Author: Satvik Dubey <satvikdubey268@gmail.com>
+Date:   Fri Sep 26 19:55:38 2025 +0530
+
+    Secure commit
+
+[33mcommit 9306d644db9b73208e887fa8cc46eb734745d137[m
+Author: Satvik Dubey <satvikdubey268@gmail.com>
+Date:   Fri Sep 26 19:52:27 2025 +0530
+
+    secure commit remove file
+
+[33mcommit 8e89d1f4fa1cbd00dd198610f38f867c1e2c6545[m
+Author: Satvik Dubey <satvikdubey268@gmail.com>
+Date:   Fri Sep 26 19:52:13 2025 +0530
+
+    secure commit remove file
+
+[33mcommit 9e0f41b939ec2544f3beb173655fe3b3d5bc4646[m
+Author: Satvik Dubey <86493871+Dubeysatvik123@users.noreply.github.com>
+Date:   Fri Sep 26 20:07:50 2025 +0530
+
+    Update backup.sh
+
+[33mcommit 647956da0804a4b13ec3c8a600ffef81712b0cbc[m
+Author: Satvik Dubey <satvikdubey268@gmail.com>
+Date:   Fri Sep 26 15:57:50 2025 +0530
+
+    in branch bsic
+
+[33mcommit 30bc38266e9e9f0e7db4ae2b7e12e46b68ac49b6[m
+Author: Satvik Dubey <satvikdubey268@gmail.com>
+Date:   Fri Sep 26 15:53:03 2025 +0530
+
+    TAsk comleted
+
+[33mcommit 2ac90e670b0f60fb86c191f57e4ddd1501eafb21[m
+Author: Satvik Dubey <satvikdubey268@gmail.com>
+Date:   Fri Sep 26 15:52:22 2025 +0530
+
+    TAsk comleted
+
+[33mcommit 35cbdc8dd3e9e84bddb576d647adffa961c42bf4[m
+Author: Satvik Dubey <satvikdubey268@gmail.com>
+Date:   Fri Sep 26 15:51:53 2025 +0530
+
+    first commit
