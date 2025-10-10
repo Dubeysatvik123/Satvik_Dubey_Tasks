@@ -1,0 +1,124 @@
+#!/bin/bash
+##=============================================================================
+## Nuxeo EC2 Setup Script
+##=============================================================================
+## This script sets up the Nuxeo monitoring stack on an EC2 instance
+##
+## Prerequisites:
+## - Ubuntu 20.04 or later
+## - sudo privileges
+##
+## Usage: ./setup.sh
+##=============================================================================
+
+set -e
+
+echo "========================================="
+echo "Nuxeo Monitoring Stack Setup for EC2"
+echo "========================================="
+echo ""
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Check if running as root
+if [ "$EUID" -eq 0 ]; then 
+   echo -e "${RED}Please do not run as root. Run as ubuntu user with sudo privileges.${NC}"
+   exit 1
+fi
+
+# Update system
+echo -e "${GREEN}[1/6] Updating system packages...${NC}"
+sudo apt-get update
+sudo apt-get upgrade -y
+
+# Install Docker
+echo -e "${GREEN}[2/6] Installing Docker...${NC}"
+if ! command -v docker &> /dev/null; then
+    sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    sudo apt-get update
+    sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+    sudo usermod -aG docker $USER
+    echo -e "${YELLOW}Docker installed. You may need to log out and back in for group changes to take effect.${NC}"
+else
+    echo "Docker already installed"
+fi
+
+# Install Docker Compose
+echo -e "${GREEN}[3/6] Installing Docker Compose...${NC}"
+if ! command -v docker-compose &> /dev/null; then
+    sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
+else
+    echo "Docker Compose already installed"
+fi
+
+# Verify installations
+echo -e "${GREEN}[4/6] Verifying installations...${NC}"
+docker --version
+docker-compose --version
+
+# Set up system limits for Elasticsearch
+echo -e "${GREEN}[5/6] Configuring system for Elasticsearch...${NC}"
+echo "vm.max_map_count=262144" | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+
+# Create necessary configuration files
+echo -e "${GREEN}[6/6] Creating configuration files...${NC}"
+
+cat > postgresql.conf << 'EOF'
+nuxeo.db.type=postgresql
+nuxeo.db.host=nuxeodb
+nuxeo.db.port=5432
+nuxeo.db.name=nuxeo
+nuxeo.db.user=nuxeo
+nuxeo.db.password=nuxeo
+EOF
+
+cat > elasticsearch.conf << 'EOF'
+elasticsearch.addressList=http://nuxeo_es:9200
+elasticsearch.indexNumberOfReplicas=0
+elasticsearch.indexNumberOfShards=1
+EOF
+
+cat > kafka.properties << 'EOF'
+kafka.enabled=true
+kafka.bootstrap.servers=nuxeo_kafka:9092
+kafka.replication.factor=1
+kafka.partitions=1
+kafka.consumer.group.id=nuxeo-consumer-group
+kafka.consumer.auto.offset.reset=earliest
+kafka.producer.acks=all
+EOF
+
+echo ""
+echo -e "${GREEN}=========================================${NC}"
+echo -e "${GREEN}Setup Complete!${NC}"
+echo -e "${GREEN}=========================================${NC}"
+echo ""
+echo "Next steps:"
+echo "1. If this is your first time installing Docker, log out and back in"
+echo "2. Run: docker-compose up -d"
+echo "3. Wait for all services to start (this may take a few minutes)"
+echo "4. Access the services:"
+echo "   - Nuxeo: http://<your-ec2-ip>:8080"
+echo "   - Grafana: http://<your-ec2-ip>:3000 (admin/admin)"
+echo "   - Prometheus: http://<your-ec2-ip>:9090"
+echo "   - Elasticsearch: http://<your-ec2-ip>:9200"
+echo ""
+echo "EC2 Security Group Requirements:"
+echo "   - Port 22 (SSH)"
+echo "   - Port 8080 (Nuxeo)"
+echo "   - Port 3000 (Grafana)"
+echo "   - Port 9090 (Prometheus)"
+echo "   - Port 9200 (Elasticsearch)"
+echo ""
+echo "To check status: docker-compose ps"
+echo "To view logs: docker-compose logs -f [service_name]"
+echo "To stop: docker-compose down"
+echo ""

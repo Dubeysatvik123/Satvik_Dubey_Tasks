@@ -1,0 +1,212 @@
+version: "3.3"
+
+services:
+  # -------------------- POSTGRES --------------------
+  db:
+    image: postgres:12
+    container_name: nuxeodb
+    environment:
+      POSTGRES_DB: nuxeo
+      POSTGRES_USER: nuxeo
+      POSTGRES_PASSWORD: nuxeo
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nuxeo"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - monitoring
+
+  # -------------------- ELASTICSEARCH --------------------
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    container_name: nuxeo_es
+    environment:
+      - discovery.type=single-node
+      - cluster.name=elasticsnexus
+      - bootstrap.memory_lock=true
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - monitoring
+
+  # -------------------- ZOOKEEPER --------------------
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: nuxeo_zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_PORT: 2181
+      ZOO_SERVERS: server.1=nuxeo_zookeeper:2888:3888
+    networks:
+      - monitoring
+
+  # -------------------- KAFKA --------------------
+  kafka:
+    image: wurstmeister/kafka
+    container_name: nuxeo_kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "9999:9999"  # JMX port
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: nuxeo_zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://nuxeo_kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_JMX_OPTS: "-Dcom.sun.management.jmxremote=true -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=nuxeo_kafka -Dcom.sun.management.jmxremote.rmi.port=9999"
+      JMX_PORT: 9999
+    volumes:
+      - kafka_data:/kafka
+    networks:
+      - monitoring
+
+  # -------------------- NUXEO --------------------
+  nuxeo:
+    image: nuxeo/nuxeo:latest
+    container_name: nuxeo
+    environment:
+      - NUXEO_PACKAGES=nuxeo-web-ui
+      - NUXEO_PROMETHEUS_ENABLED=true
+      - NUXEO_DB_HOST=nuxeodb
+      - NUXEO_DB_NAME=nuxeo
+      - NUXEO_DB_USER=nuxeo
+      - NUXEO_DB_PASSWORD=nuxeo
+    depends_on:
+      db:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_started
+      kafka:
+        condition: service_started
+    volumes:
+      - ./kafka.properties:/etc/nuxeo/conf.d/kafka.properties
+      - ./postgresql.conf:/etc/nuxeo/conf.d/postgresql.conf
+      - ./elasticsearch.conf:/etc/nuxeo/conf.d/elasticsearch.conf
+      - ./nuxeo.conf:/etc/nuxeo/conf.d/nuxeo.conf
+      - nuxeo_data:/var/lib/nuxeo/data
+    ports:
+      - "8080:8080"
+    networks:
+      - monitoring
+
+  # -------------------- POSTGRES EXPORTER --------------------
+  postgres_exporter:
+    image: prometheuscommunity/postgres-exporter
+    container_name: postgres_exporter
+    environment:
+      DATA_SOURCE_NAME: "postgresql://nuxeo:nuxeo@nuxeodb:5432/nuxeo?sslmode=disable"
+    ports:
+      - "9187:9187"
+    depends_on:
+      - db
+    networks:
+      - monitoring
+
+  # -------------------- ELASTICSEARCH EXPORTER --------------------
+  elasticsearch_exporter:
+    image: quay.io/prometheuscommunity/elasticsearch-exporter:latest
+    container_name: elasticsearch_exporter
+    command:
+      - "--es.uri=http://nuxeo_es:9200"
+    ports:
+      - "9114:9114"
+    depends_on:
+      - elasticsearch
+    networks:
+      - monitoring
+
+  # -------------------- KAFKA JMX EXPORTER --------------------
+  kafka_jmx_exporter:
+    image: bitnami/jmx-exporter:latest
+    container_name: kafka_jmx_exporter
+    ports:
+      - "7070:7070"
+    environment:
+      - SERVICE_PORT=7070
+    command:
+      - "7070"
+      - "/opt/bitnami/jmx-exporter/config.yml"
+    volumes:
+      - ./kafka_jmx_config.yml:/opt/bitnami/jmx-exporter/config.yml
+    depends_on:
+      - kafka
+    networks:
+      - monitoring
+
+  # -------------------- PROMETHEUS --------------------
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - monitoring
+
+  # -------------------- GRAFANA --------------------
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - monitoring
+
+  # -------------------- CADVISOR --------------------
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    privileged: true
+    ports:
+      - "8000:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    devices:
+      - /dev/kmsg
+    networks:
+      - monitoring
+
+# -------------------- NETWORKS & VOLUMES --------------------
+networks:
+  monitoring:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  es_data:
+  nuxeo_data:
+  kafka_data:
+  prometheus_data:
+  grafana_data:

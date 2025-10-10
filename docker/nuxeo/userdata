@@ -1,0 +1,33 @@
+ #!/bin/bash
+sudo -i 
+apt update -y
+apt install docker* -y
+systemctl enable --now docker
+git clone https://github.com/Dubeysatvik123/Satvik_Dubey_Tasks.git
+cd Satvik_Dubey_Tasks/docker/nuxeo
+docker-compose up -d
+cd ..
+cd monitoring
+docker-compose up -d
+
+---
+sudo -i
+apt update -y
+apt install unzip curl -y
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+./aws/install -i /usr/local/aws-cli -b /usr/local/bin
+export PATH=$PATH:/usr/local/bin
+aws s3 cp s3://satvikdubeynuxeo12 . --recursive
+cd nuxeo
+bash setup.sh
+
+
+aws s3 cp s3://satvikdubeynuxeo1 .
+
+---
+#!/bin/bash 
+sudo -i
+apt update -y
+apt install apache2 -y
+systemctl enable --now apache2
