@@ -1,0 +1,19 @@
+ubject: Daily Status Update – Terraform & AWS
+
+Respected Sir,
+
+Today I have completed:
+Provisioned a custom VPC along with EC2 instances and configure Ansible on them using user-data scripts.
+
+Set up instance monitoring using CloudWatch to keep track of performance and health.
+
+Worked with Terraform modules, integrating them into a configuration file and practically applying them in the setup.
+
+Learned and used several Terraform functions, including concat, flatten, format, count, locals, lookup, and null_resource.
+
+Status: Completed
+
+Tomorrow's Task : Plan to use provisioners to configure and enhance the infrastructure further. This will include setting up multiple service stacks, such as S3 buckets, IAM roles, and policies, and ensuring everything is fully integrated and optimized.
+
+Thanks & Regards,
+Satvik Dubey
