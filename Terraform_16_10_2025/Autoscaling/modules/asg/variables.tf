@@ -1,15 +1,11 @@
-variable "aws_region" {}
 variable "project_name" {}
 variable "environment" {}
-
-variable "vpc_cidr" {}
-variable "availability_zones" {}
-variable "private_subnet_cidrs" {}
-variable "public_subnet_cidrs" {}
-
 variable "ami_id" {}
 variable "instance_type" {}
 variable "key_name" {}
 variable "asg_min_size" {}
 variable "asg_max_size" {}
 variable "asg_desired_capacity" {}
+variable "private_subnets" {}
+variable "vpc_id" {}
+variable "user_data_path" {}

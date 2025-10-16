@@ -5,7 +5,3 @@ output "vpc_id" {
 output "private_subnets" {
   value = module.vpc.private_subnets
 }
-
-output "asg_name" {
-  value = module.asg.asg_name
-}
