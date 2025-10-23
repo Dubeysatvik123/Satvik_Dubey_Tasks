@@ -1,0 +1,10 @@
+---
+- name: Deploy Nuxeo with Docker
+  hosts: nuxeo_servers
+  become: yes
+  roles:
+    - nuxeo
+  vars:
+    nuxeo_db_password: "secure_nuxeo_password"
+    nuxeo_port: 8080
+    nuxeo_es_cluster_name: "nuxeo-cluster"

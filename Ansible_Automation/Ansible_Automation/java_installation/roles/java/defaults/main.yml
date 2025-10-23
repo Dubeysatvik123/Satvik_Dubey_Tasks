@@ -1,0 +1,4 @@
+---
+java_package: openjdk-11-jdk
+apache2_package: apache2
+vsftpd_package: vsftpd

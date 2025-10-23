@@ -1,0 +1,14 @@
+---
+- name: Deploy hello world html to web root
+  template:
+    src: hello_world.html.j2
+    dest: /var/www/html/index.html
+    owner: www-data
+    group: www-data
+    mode: '0644'
+  notify: Restart apache2
+
+- name: Restart apache2
+  service:
+    name: apache2
+    state: restarted

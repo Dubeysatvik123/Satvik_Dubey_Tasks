@@ -1,0 +1,19 @@
+---
+- name: Copy website files (local)
+  hosts: local
+  connection: local
+  become: true
+
+  tasks:
+    - name: Copy files to web server
+      copy:
+        src: "{{ playbook_dir }}/2143_inner_peace/"
+        dest: /var/www/html/
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Restart Apache
+      service:
+        name: apache2
+        state: restarted

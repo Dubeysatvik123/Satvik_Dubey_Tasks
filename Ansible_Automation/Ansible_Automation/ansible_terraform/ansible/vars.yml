@@ -1,0 +1,14 @@
+---
+# Cluster host and SSH info for Ansible
+master_ip: REPLACE_WITH_MASTER_PUBLIC_IP
+ubuntu_workers:
+  - REPLACE_WITH_UBUNTU_WORKER1_IP
+  - REPLACE_WITH_UBUNTU_WORKER2_IP
+amzn_worker: REPLACE_WITH_AMAZON_WORKER_IP
+ssh_user: ubuntu
+ssh_key: ../ansible-terraform-key
+master_host: ansible-master
+ubuntu_hosts:
+  - ansible-worker-ubuntu-1
+  - ansible-worker-ubuntu-2
+amzn_host: ansible-worker-amzn-1

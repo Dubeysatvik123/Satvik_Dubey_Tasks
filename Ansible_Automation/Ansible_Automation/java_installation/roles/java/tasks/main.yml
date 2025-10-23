@@ -1,0 +1,37 @@
+---
+- name: Install Java
+  apt:
+    name: "{{ java_package }}"
+    state: present
+  become: yes
+
+- name: Install Apache2
+  apt:
+    name: "{{ apache2_package }}"
+    state: present
+  become: yes
+  notify: Deploy hello world html to web root
+
+- name: Install vsftpd
+  apt:
+    name: "{{ vsftpd_package }}"
+    state: present
+  become: yes
+
+- name: Render package information template
+  template:
+    src: info.txt.j2
+    dest: /tmp/package-info.txt
+
+- name: Render Hello World Java template
+  template:
+    src: hello_world.java.j2
+    dest: /tmp/HelloWorld.java
+
+- name: Copy Hello World HTML to web root
+  template:
+    src: hello_world.html.j2
+    dest: /var/www/html/index.html
+    owner: www-data
+    group: www-data
+    mode: '0644'

@@ -1,0 +1,10 @@
+---
+- name: Apache2, Java, Nuxeo
+  hosts: nuxeo_servers
+  become: yes
+
+  roles:
+    - apache2
+    - nuxeo
+  vars:
+    apache2_package: apache2

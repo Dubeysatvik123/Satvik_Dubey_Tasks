@@ -1,0 +1,11 @@
+- name: Ensure apache2 is installed
+  apt:
+    name: "{{ apache2_package }}"
+    state: present
+    update_cache: yes
+
+- name: Ensure apache2 is running
+  service:
+    name: "{{ apache2_service }}"
+    state: started
+    enabled: yes

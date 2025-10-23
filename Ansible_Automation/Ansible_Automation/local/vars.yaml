@@ -1,0 +1,16 @@
+---
+- name: Install packages
+  hosts: all
+  become: yes
+  vars:
+    pkgs:
+      - git
+      - curl
+      - htop
+  tasks:
+    - name: Install packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ pkgs }}"
+      when: ansible_os_family == 'Debian'

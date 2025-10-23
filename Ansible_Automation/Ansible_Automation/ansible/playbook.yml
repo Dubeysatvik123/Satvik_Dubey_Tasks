@@ -1,0 +1,11 @@
+---
+- name: Apache2 role demo
+  hosts: localhost
+  connection: local
+  become: yes
+
+  roles:
+    - apache2
+    - java
+  vars:
+    apache2_package: apache2

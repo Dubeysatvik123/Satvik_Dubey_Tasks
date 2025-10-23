@@ -1,0 +1,24 @@
+---
+- hosts: master
+  become: true
+  tasks:
+    - name: Install packages on master
+      apt:
+        name: [python3, curl]
+        state: present
+      when: ansible_os_family == "Debian"
+    - name: Master setup message
+      debug:
+        msg: "Master node setup complete."
+
+- hosts: workers
+  become: true
+  tasks:
+    - name: Install packages on worker
+      apt:
+        name: [python3, curl]
+        state: present
+      when: ansible_os_family == "Debian"
+    - name: Worker setup message
+      debug:
+        msg: "Worker node setup complete."

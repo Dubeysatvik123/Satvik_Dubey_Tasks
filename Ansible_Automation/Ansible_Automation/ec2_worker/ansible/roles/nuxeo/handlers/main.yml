@@ -1,0 +1,18 @@
+---
+- name: restart docker
+  systemd:
+    name: docker
+    state: restarted
+    daemon_reload: yes
+
+- name: restart nuxeo services
+  shell: |
+    cd {{ nuxeo_target_dir }}
+    docker-compose restart
+  become: yes
+
+- name: stop nuxeo services
+  shell: |
+    cd {{ nuxeo_target_dir }}
+    docker-compose down
+  become: yes

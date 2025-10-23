@@ -1,0 +1,22 @@
+---
+- name: Apache install and serve page
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Install Apache
+      apt:
+        name: apache2
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Start Apache
+      service:
+        name: apache2
+        state: started
+        enabled: true
+
+    - name: Deploy a sample HTML
+      copy:
+        content: "<h1>Hello, Apache!</h1>"
+        dest: /var/www/html/index.html

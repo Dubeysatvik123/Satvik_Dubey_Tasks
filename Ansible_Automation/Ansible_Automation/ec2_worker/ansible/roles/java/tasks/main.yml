@@ -1,0 +1,32 @@
+---
+
+- name: Ensure Java installation directory exists
+  file:
+    path: "{{ jdk_install_dir }}"
+    state: directory
+    mode: '0755'
+  become: yes
+
+- name: Download JDK archive
+  get_url:
+    url: "{{ jdk_archive_url }}"
+    dest: "/tmp/{{ jdk_archive_file }}"
+    mode: '0644'
+    validate_certs: no
+  become: yes
+
+- name: Extract JDK archive
+  ansible.builtin.unarchive:
+    src: "/tmp/{{ jdk_archive_file }}"
+    dest: "{{ jdk_install_dir }}"
+    remote_src: yes
+  become: yes
+
+- name: Set JAVA_HOME in /etc/profile.d/java.sh
+  ansible.builtin.copy:
+    dest: /etc/profile.d/java.sh
+    content: |
+      export JAVA_HOME={{ jdk_install_dir }}/jdk-{{ full_version }}
+      export PATH=$JAVA_HOME/bin:$PATH
+    mode: '0755'
+  become: yes
