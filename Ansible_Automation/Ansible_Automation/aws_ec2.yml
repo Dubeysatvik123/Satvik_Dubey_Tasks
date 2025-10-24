@@ -1,0 +1,21 @@
+---
+plugin: amazon.aws.aws_ec2
+regions:
+  - us-east-1
+filters:
+  instance-state-name: running
+keyed_groups:
+  - key: tags.Environment
+    prefix: env
+    separator: "_"
+    strict: true
+hostnames:
+  - ip-address
+compose:
+  ansible_host: public_ip_address
+  ansible_ssh_private_key_file: ./ansible.pem
+group_vars:
+  env_dev:
+    ansible_user: ubuntu
+  env_prod:
+    ansible_user: ec2-user

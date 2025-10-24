@@ -1,0 +1,27 @@
+---
+- name: exception handling
+  hosts: all
+  become: yes
+  vars:
+    package_name: "apache2"
+  tasks:
+    - name: If system is ubuntu
+      block:
+        - name: install via apt
+          apt:
+            name: "{{ package_name }}"
+            state: present
+            update_cache: yes
+          register: apt_result
+      rescue:
+        - name: installing via yum
+          yum:
+            name: "{{ package_name }}"
+            state: present
+          register: yum_result
+      always:
+        - name: summary
+          debug:
+            msg:
+              - "work done"
+          tags: [summary]
