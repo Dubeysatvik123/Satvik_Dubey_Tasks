@@ -1,0 +1,7 @@
+---
+JAVA_DIR: "/usr/local/java"
+full_version: "21.0.2"
+version: "21"
+jdk_archive_file: "jdk-{{ full_version }}_linux-x64_bin.tar.gz"
+jdk_install_dir: "/usr/local/java"
+jdk_archive_url: "https://download.oracle.com/java/{{ version }}/archive/{{ jdk_archive_file }}"

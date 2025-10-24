@@ -1,0 +1,104 @@
+---
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Install required packages
+  apt:
+    name: "{{ docker_packages }}"
+    state: present
+
+- name: Add current user to docker group
+  user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: yes
+
+- name: Start and enable Docker service
+  systemd:
+    name: "{{ docker_service }}"
+    state: "{{ docker_service_state }}"
+    enabled: "{{ docker_service_enabled }}"
+    daemon_reload: yes
+
+- name: Create Nuxeo target directory
+  file:
+    path: "{{ nuxeo_target_dir }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0755'
+
+- name: Copy Nuxeo configuration files
+  copy:
+    src: "{{ nuxeo_source_dir }}/{{ item }}"
+    dest: "{{ nuxeo_target_dir }}/{{ item }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0644'
+  loop:
+    - docker-compose.yaml
+    - nuxeo.conf
+    - postgresql.conf
+    - elasticsearch.conf
+    - kafka.properties
+    - prometheus.yml
+  when: nuxeo_source_dir is defined and nuxeo_source_dir != ""
+
+- name: Create Docker Compose file from template
+  template:
+    src: docker-compose.yaml.j2
+    dest: "{{ nuxeo_target_dir }}/docker-compose.yaml"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0644'
+
+- name: Create Nuxeo configuration from template
+  template:
+    src: nuxeo.conf.j2
+    dest: "{{ nuxeo_target_dir }}/nuxeo.conf"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0644'
+
+- name: Create PostgreSQL configuration from template
+  template:
+    src: postgresql.conf.j2
+    dest: "{{ nuxeo_target_dir }}/postgresql.conf"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0644'
+
+- name: Create Elasticsearch configuration from template
+  template:
+    src: elasticsearch.conf.j2
+    dest: "{{ nuxeo_target_dir }}/elasticsearch.conf"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0644'
+
+- name: Create Kafka properties from template
+  template:
+    src: kafka.properties.j2
+    dest: "{{ nuxeo_target_dir }}/kafka.properties"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0644'
+
+
+- name: Pull Docker images
+  shell: |
+    cd {{ nuxeo_target_dir }}
+    docker-compose pull
+  become: yes
+
+- name: Start Nuxeo services with Docker Compose
+  shell: |
+    cd {{ nuxeo_target_dir }}
+    docker-compose up -d
+  become: yes
+
+- name: Display service status
+  debug:
+    msg: "Nuxeo services are running. Access Nuxeo at http://{{ ansible_default_ipv4.address }}:{{ nuxeo_port }}"

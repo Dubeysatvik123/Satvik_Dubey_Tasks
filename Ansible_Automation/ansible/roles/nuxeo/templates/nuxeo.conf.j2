@@ -1,0 +1,47 @@
+JAVA_OPTS=$JAVA_OPTS -Dfile.encoding=UTF-8 -Dmail.mime.decodeparameters=true
+
+JAVA_OPTS=$JAVA_OPTS -Djava.util.Arrays.useLegacyMergeSort=true
+
+JAVA_OPTS=$JAVA_OPTS -Xloggc:"${nuxeo.log.dir}/gc.log" -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps
+
+nuxeo.force.generation={{ nuxeo_force_generation | lower }}
+nuxeo.templates={{ nuxeo_templates }}
+
+nuxeo.db.host=${env:NUXEO_DB_HOST:{{ nuxeo_db_host }}}
+nuxeo.db.name=${env:NUXEO_DB_NAME:{{ nuxeo_db_name }}}
+nuxeo.db.user=${env:NUXEO_DB_USER:{{ nuxeo_db_user }}}
+nuxeo.db.password=${env:NUXEO_DB_PASSWORD:{{ nuxeo_db_password }}}
+
+nuxeo.url=${env:NUXEO_URL}
+
+elasticsearch.addressList=${env:NUXEO_ES_HOSTS:{{ nuxeo_es_hosts }}}
+elasticsearch.clusterName=${env:NUXEO_ES_CLUSTER_NAME:{{ nuxeo_es_cluster_name }}}
+elasticsearch.indexName=${env:NUXEO_ES_INDEX_NAME:{{ nuxeo_es_index_name }}}
+elasticsearch.indexNumberOfReplicas=${env:NUXEO_ES_REPLICAS:{{ nuxeo_es_replicas }}}
+elasticsearch.indexNumberOfShards=${env:NUXEO_ES_SHARDS:{{ nuxeo_es_shards }}}
+
+nuxeo.redis.enabled=${env??:NUXEO_REDIS_HOST}
+
+nuxeo.vcs.ddlmode=${env:NUXEO_DDL_MODE}
+
+repository.binary.store=${env:NUXEO_BINARY_STORE}
+
+nuxeo.wizard.done={{ nuxeo_wizard_done | lower }}
+
+audit.elasticsearch.enabled=${env:NUXEO_AUDIT_ES_ENABLED:true}
+elasticsearch.httpEnabled=${env:NUXEO_ES_HTTP_ENABLED:true}
+
+nuxeo.log.dir=/var/log/nuxeo
+nuxeo.pid.dir=/var/run/nuxeo
+nuxeo.data.dir=/var/lib/nuxeo/data
+
+audit.elasticsearch.enabled=true
+elasticsearch.httpEnabled=true
+nuxeo.db.host={{ nuxeo_db_host }}
+nuxeo.db.name={{ nuxeo_db_name }}
+nuxeo.db.password={{ nuxeo_db_password }}
+nuxeo.db.user={{ nuxeo_db_user }}
+
+metrics.enabled=true
+metrics.prometheus.enabled=true
+metrics.prometheus.port=9090

@@ -1,0 +1,78 @@
+version: "3.3"
+
+services:
+  db:
+    image: postgres:12
+    container_name: nuxeodb
+    environment:
+      POSTGRES_DB: {{ nuxeo_db_name }}
+      POSTGRES_USER: {{ nuxeo_db_user }}
+      POSTGRES_PASSWORD: {{ nuxeo_db_password }}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "{{ postgres_port }}:5432"
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    container_name: nuxeo_es
+    environment:
+      - discovery.type=single-node
+      - cluster.name={{ nuxeo_es_cluster_name }}
+      - bootstrap.memory_lock=true
+      - ES_JAVA_OPTS={{ elasticsearch_java_opts }}
+  
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    ports:
+      - "{{ elasticsearch_port }}:9200"
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: nuxeo_zookeeper
+    ports:
+      - "{{ zookeeper_port }}:2181"
+    environment:
+      ZOO_MY_ID: 1
+      ZOO_PORT: 2181
+      ZOO_SERVERS: server.1=zookeeper:2888:3888
+
+  
+  kafka:
+    image: wurstmeister/kafka
+    container_name: nuxeo_kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "{{ kafka_port }}:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: nuxeo_zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://nuxeo_kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+
+  nuxeo:
+    image: nuxeo/nuxeo:latest
+    container_name: nuxeo
+    environment:
+      - NUXEO_PACKAGES={{ nuxeo_packages }}
+    depends_on:
+      - db
+      - elasticsearch
+      - kafka
+    volumes:
+      - ./kafka.properties:/etc/nuxeo/conf.d/kafka.properties
+      - ./postgresql.conf:/etc/nuxeo/conf.d/postgresql.conf
+      - ./elasticsearch.conf:/etc/nuxeo/conf.d/elasticsearch.conf
+      - ./nuxeo.conf:/etc/nuxeo/conf.d/nuxeo.conf
+      - nuxeo_data:/var/lib/nuxeo/data
+    ports:
+      - "{{ nuxeo_port }}:8080"
+
+volumes:
+  postgres_data:
+  es_data:
+  nuxeo_data:
+  kafka_data:

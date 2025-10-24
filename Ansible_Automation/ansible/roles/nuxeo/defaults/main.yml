@@ -1,0 +1,45 @@
+docker_packages:
+  - docker*
+  - docker-compose
+  - unzip
+  - curl
+
+docker_service: docker
+docker_service_state: started
+docker_service_enabled: true
+
+nuxeo_source_dir: /home/ncs/satvik_Devops_trainee/docker/nuxeo
+nuxeo_target_dir: /opt/nuxeo
+nuxeo_user: nuxeo
+nuxeo_group: nuxeo
+
+nuxeo_db_host: nuxeodb
+nuxeo_db_name: nuxeo
+nuxeo_db_user: nuxeo
+nuxeo_db_password: nuxeo
+nuxeo_db_port: 5432
+
+nuxeo_es_hosts: http://nuxeo_es:9200
+nuxeo_es_cluster_name: elasticsnexus
+nuxeo_es_index_name: nuxeo
+nuxeo_es_replicas: 0
+nuxeo_es_shards: 1
+
+nuxeo_kafka_enabled: true
+nuxeo_kafka_bootstrap_servers: nuxeo_kafka:9092
+nuxeo_kafka_replication_factor: 1
+nuxeo_kafka_partitions: 1
+nuxeo_kafka_consumer_group_id: nuxeo-consumer-group
+
+nuxeo_packages: nuxeo-web-ui
+nuxeo_force_generation: true
+nuxeo_templates: default,docker,docker
+nuxeo_wizard_done: true
+
+nuxeo_port: 8080
+postgres_port: 5433
+elasticsearch_port: 9200
+kafka_port: 9092
+zookeeper_port: 2181
+
+elasticsearch_java_opts: "-Xms512m -Xmx512m"

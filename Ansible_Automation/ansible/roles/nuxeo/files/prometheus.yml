@@ -1,0 +1,33 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['prometheus:9090']
+
+  # Docker metrics via cAdvisor
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+
+  # Nuxeo metrics (must have prometheus enabled)
+  - job_name: 'nuxeo'
+    static_configs:
+      - targets: ['nuxeo:8080']
+
+  # PostgreSQL metrics
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres_exporter:9187']
+
+  # Elasticsearch metrics
+  - job_name: 'elasticsearch'
+    static_configs:
+      - targets: ['elasticsearch_exporter:9114']
+
+  # Kafka JMX metrics
+  - job_name: 'kafka'
+    static_configs:
+      - targets: ['nuxeo_kafka:7071']
