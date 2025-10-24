@@ -1,3 +1,0 @@
-apache2_package: apache2
-apache2_service: apache2
-java_package: openjdk-17-jdk
